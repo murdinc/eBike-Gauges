@@ -1,25 +1,32 @@
 // eBike Gauges - Main
+// OLED
+#include <SPI.h>
+#include <Wire.h>
 
 // GPS
-long latitude;              // Latitude in hundred thousandths of a degree
-long longitude;             // Longitude in hundred thousandths of a degree
-long altitudeGps;           // Altitude in centimeters
-unsigned short satellites;  // Number of satellites tracked
-unsigned long fix_age;      // Age of fix in milliseconds
-unsigned long date;         // Date as ddmmyy
-unsigned long time;         // Time as hhmmsscc
-unsigned long time_age;     // Age in milliseconds
+static int year;
+static byte month, day, hour, minute, second;
+unsigned long age;
+static bool control_blink = false;
+byte TZ = 4;
+
+//static unsigned short int satellites;  // Number of satellites tracked
 
 // Battery Voltage
-long voltage;               // Voltage in 100th of a Volt
+//long voltage;               // Voltage in 100th of a Volt
 
 void setup() {
-  initGPS();
+  Serial.begin(9600);
   initOLED();
-  initGYRO();
+  initGyro();
+  initGPS();
 }
 
 void loop()
 {
-  readGPS();
+  getGPSData();
+  drawDisplay1();
+  drawDisplay2();
+  readAccel();
 }
+
