@@ -4,8 +4,6 @@
 #include <Adafruit_SSD1306.h>
 #include "TinyGPS.h"
 
-#include "Gauges.h"
-
 ////////////////////////////////////////////////////////////////////
 //
 //OLED
@@ -14,41 +12,15 @@
 
 #define OLED_RESET 4
 Adafruit_SSD1306 display(OLED_RESET);
-////////////////////////////////////////////////////////////////////
 
 ////////////////////////////////////////////////////////////////////
 //GYRO
 #define FREQ 30.0 // sample freq in Hz
 #define MPU 0x68 // I2C address of the MPU-6050
-////////////////////////////////////////////////////////////////////
 
 ////////////////////////////////////////////////////////////////////
 // GPS
-
 TinyGPS gps;
-////////////////////////////////////////////////////////////////////
-// eBike Gauges - Main
-// OLED
-
-
-Gauges gauges;
-
-void setup() {
-  gauges.initOLD();
-  gauges.initGPS();
-  gauges.initGyro();
-
-}
-
-
-void loop() {
-
-    gauges.getGPSData();
-
-
-
-}
-
 
 class Gauges {
     public:
@@ -98,19 +70,29 @@ class Gauges {
       int i2c_read(int addr, int start, uint8_t *buffer, int size);
       int i2c_write(int addr, int start, const uint8_t *pData, int size);
       int i2c_write_reg(int addr, int reg, uint8_t data);
-      
-      
-
 };
 
+Gauges gauges;
 
 Gauges::Gauges()
   :  _blink(false)
   ,  _tz(4)
 {
-
   
 }
+  
+void setup() {
+  gauges.initOLD();
+  gauges.initGPS();
+  gauges.initGyro();
+
+}
+
+
+void loop() {
+    gauges.getGPSData();
+}
+
 
 void Gauges::initOLD()
 {
@@ -350,6 +332,7 @@ void Gauges::getGPSData() {
   }
 }
 
+
 void Gauges::smartdelay(unsigned long ms)
 {
   unsigned long start = millis();
@@ -372,6 +355,8 @@ void Gauges::smartdelay(unsigned long ms)
       
   } while (millis() - start < ms);
 }
+
+
 
 void Gauges::readAccel(){
   uint8_t i2cData[4];
