@@ -98,9 +98,9 @@ void Gauges::initOLD()
 {
   // Initializing a single display and sharing a buffer since having two would take up more memory than we have.
   display.begin(SSD1306_SWITCHCAPVCC, DISPLAY2);
-  //display.setRotation(2);
+  display.setRotation(2);
   display.begin(SSD1306_SWITCHCAPVCC, DISPLAY1);
-  //display.setRotation(2);
+  display.setRotation(2);
   
   logoScreen1();
   animateScreen2();
@@ -195,8 +195,8 @@ void Gauges::drawDisplay2() {
   
   // Sqyare
   
-  int x = ampX;
-  int y = ampY;
+  int x = -ampX;
+  int y = -ampY;
   int maxX = display.width();
   int maxY = display.height();
   
@@ -300,7 +300,7 @@ void Gauges::printSats() {
 
 void Gauges::printSpeed() {
   display.setTextSize(4);
-  if(_speed != TinyGPS::GPS_INVALID_F_SPEED) {
+  if(_speed != TinyGPS::GPS_INVALID_F_SPEED && _speed >= 0) {
     char speedChar[2];
     sprintf(speedChar, "%d", _speed);
     
@@ -309,17 +309,17 @@ void Gauges::printSpeed() {
     else
       display.setCursor(14,17);
     display.print(speedChar);
-  }
+  } 
 }
 
 
 void Gauges::printGyro() {
   display.setTextSize(1);
   display.setCursor(14,20);
-  display.print(ampX); 
+  display.print(-ampX); 
  
   display.setCursor(14,37);
-  display.print(ampY); 
+  display.print(-ampY); 
 }
 
 
@@ -350,6 +350,7 @@ void Gauges::smartdelay(unsigned long ms)
         drawDisplay1();
       }
     }
+    drawDisplay1();
     readAccel();
     drawDisplay2();
       
